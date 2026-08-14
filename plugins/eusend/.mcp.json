@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "eusend": {
+      "command": "npx",
+      "args": ["-y", "@eusend_dev/mcp"],
+      "env": {
+        "EUSEND_API_KEY": "${EUSEND_API_KEY:-}",
+        "EUSEND_FROM": "${EUSEND_FROM:-}"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "eusend",
+  "displayName": "eusend",
+  "version": "0.1.0",
+  "description": "Teaches Claude to integrate eusend correctly — sending, domain verification, webhook signatures, suppressions, and which errors are worth retrying. Bundles the eusend MCP server.",
+  "author": {
+    "name": "eusend",
+    "email": "support@eusend.dev",
+    "url": "https://eusend.dev"
+  },
+  "homepage": "https://eusend.dev/docs/skill",
+  "repository": "https://github.com/eusend-dev/eusend-skill",
+  "license": "MIT",
+  "keywords": ["email", "transactional-email", "smtp", "webhooks", "eusend", "gdpr"]
+}
