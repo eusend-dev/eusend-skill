@@ -5,24 +5,24 @@ user-facing action on it.
 
 ## Full option set
 
-| Field (API / Node) | Notes |
-| --- | --- |
-| `from` | Required. Bare address or `"Acme <hello@acme.com>"`. Must be a verified domain |
-| `to` | Required. String or array, max 50 |
-| `cc` / `bcc` | Max 50 each |
-| `reply_to` / `replyTo` | String or array, max 50 |
-| `subject` | Required unless a template supplies one |
-| `html` | HTML body |
-| `text` | Plain-text body — always include one alongside `html` |
-| `react` | Node only. A React Email element, rendered to HTML locally before sending |
-| `template_id` / `templateId` | Saved template. Supplies the HTML — an `html` passed alongside is **ignored**. A `text` you pass is still used |
-| `variables` | Template substitutions |
-| `headers` | Custom headers |
-| `tags` | Max 10. Charset `A–Z a–z 0–9 _ -` only |
-| `track_opens` / `trackOpens` | Omit to use the org default (on unless changed) |
-| `track_clicks` / `trackClicks` | Omit to use the org default |
-| `attachments` | Max 20, 10 MB combined |
-| `scheduled_at` / `scheduledAt` | ISO 8601, `Date`, or natural language. Max 30 days out |
+| Field (API / Node)             | Notes                                                                                                          |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `from`                         | Required. Bare address or `"Acme <hello@acme.com>"`. Must be a verified domain                                 |
+| `to`                           | Required. String or array, max 50                                                                              |
+| `cc` / `bcc`                   | Max 50 each                                                                                                    |
+| `reply_to` / `replyTo`         | String or array, max 50                                                                                        |
+| `subject`                      | Required unless a template supplies one                                                                        |
+| `html`                         | HTML body                                                                                                      |
+| `text`                         | Plain-text body — always include one alongside `html`                                                          |
+| `react`                        | Node only. A React Email element, rendered to HTML locally before sending                                      |
+| `template_id` / `templateId`   | Saved template. Supplies the HTML — an `html` passed alongside is **ignored**. A `text` you pass is still used |
+| `variables`                    | Template substitutions                                                                                         |
+| `headers`                      | Custom headers                                                                                                 |
+| `tags`                         | Max 10. Charset `A–Z a–z 0–9 _ -` only                                                                         |
+| `track_opens` / `trackOpens`   | Omit to use the org default (on unless changed)                                                                |
+| `track_clicks` / `trackClicks` | Omit to use the org default                                                                                    |
+| `attachments`                  | Max 20, 10 MB combined                                                                                         |
+| `scheduled_at` / `scheduledAt` | ISO 8601, `Date`, or natural language. Max 30 days out                                                         |
 
 At least one of `html`, `text`, `react`, or `template_id` is required.
 
@@ -148,7 +148,7 @@ per-email; the batch endpoint doesn't support it, and campaigns use broadcasts i
 ## Batch
 
 ```ts
-const { data } = await client.batch.send([ /* up to 100 messages */ ])
+const { data } = await client.batch.send([/* up to 100 messages */])
 
 data.data.forEach((result, i) => {
   if ('error' in result) {
@@ -207,7 +207,7 @@ Rendered to HTML locally before the request — the JSX never travels over the w
 ## Reading the log
 
 ```ts
-const { data } = await client.emails.get(id)   // status + full event history
+const { data } = await client.emails.get(id) // status + full event history
 const { data: list } = await client.emails.list({ status: 'delivered', limit: 50 })
 list.nextCursor // pass as `cursor` for the next page
 ```
@@ -227,12 +227,12 @@ Both read endpoints require a `full_access` key.
 For an app that already speaks SMTP, change four settings rather than rewriting call sites.
 Same pipeline: DKIM, tracking, suppression, and limits apply identically.
 
-| Setting | Value |
-| --- | --- |
-| Host | `smtp.eusend.dev` |
-| Port | `465` — implicit TLS. **Not** STARTTLS; 587 and 25 are not supported |
-| Username | the literal string `eusend` |
-| Password | any API key, `eu_live_…` or `eu_test_…` |
+| Setting  | Value                                                                |
+| -------- | -------------------------------------------------------------------- |
+| Host     | `smtp.eusend.dev`                                                    |
+| Port     | `465` — implicit TLS. **Not** STARTTLS; 587 and 25 are not supported |
+| Username | the literal string `eusend`                                          |
+| Password | any API key, `eu_live_…` or `eu_test_…`                              |
 
 **The username is always `eusend`, not an email address and not the key.** Putting the key in
 the username field is the most common cause of a `535` authentication failure.

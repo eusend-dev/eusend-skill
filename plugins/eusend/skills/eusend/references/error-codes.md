@@ -10,27 +10,27 @@ Reading the code: `error.name` (Node SDK), `e.code` (Python), `apiErr.Code` (Go)
 
 ## Full table
 
-| Code | Status | Meaning | Action |
-| --- | --- | --- | --- |
-| `UNAUTHORIZED` | 401 | Key missing, invalid, or revoked | Fix the key. Never retry |
-| `FORBIDDEN` | 403 | Key lacks permission for this action | Usually a `sending_access` key calling a read endpoint |
-| `NOT_FOUND` | 404 | Resource does not exist | Never retry |
-| `VALIDATION_ERROR` | 400 | Body failed validation | Read the message; fix the payload |
-| `BAD_REQUEST` | 400 | Malformed request | Fix the payload |
-| `CONFLICT` | 409 | Resource exists, or a scheduled email already started sending | Never retry |
-| `RATE_LIMITED` | 429 | >100 requests / 10s per org | Back off ~seconds, retry |
-| `DAILY_LIMIT_EXCEEDED` | 429 | Daily recipient ceiling hit | Retry after midnight UTC |
-| `MONTHLY_LIMIT_EXCEEDED` | 429 | Monthly quota, or the 2× hard ceiling with metered billing on | Retry next month, upgrade, or enable metered billing |
-| `PLAN_LIMIT_EXCEEDED` | 403 | Not allowed on this plan (domain limit, 100k manual suppressions) | Upgrade. Never retry |
-| `DOMAIN_NOT_VERIFIED` | 403 | Sender domain not verified | Verify the domain. Never retry |
-| `ALL_SUPPRESSED` | 422 | Every recipient is suppressed | Terminal for this send. Not an escalation |
-| `SENDING_SUSPENDED` | 403 | Account suspended — high bounce/complaint rate over 7 days | Contact support@eusend.dev |
-| `LIST_SEND_HELD` | 403 | Past the 500-recipient unreviewed list allowance | Wait for review. Retrying will not clear it |
-| `BROADCAST_HELD` | 403 | Broadcast used its unreviewed allowance | Resumes from where it stopped once cleared. Do not re-send |
-| `SERVICE_PAUSED` | 503 | Platform-wide pause | Retry shortly |
-| `ATTACHMENT_STORAGE_ERROR` | 503 | Attachment could not be stored; the send did not happen | Retry |
-| `PAYLOAD_TOO_LARGE` | 413 | Body over 16 MB | Shrink it. Base64 inflates files ~33% |
-| `INTERNAL_ERROR` | 500 | Server error | Retry after a short delay |
+| Code                       | Status | Meaning                                                           | Action                                                     |
+| -------------------------- | ------ | ----------------------------------------------------------------- | ---------------------------------------------------------- |
+| `UNAUTHORIZED`             | 401    | Key missing, invalid, or revoked                                  | Fix the key. Never retry                                   |
+| `FORBIDDEN`                | 403    | Key lacks permission for this action                              | Usually a `sending_access` key calling a read endpoint     |
+| `NOT_FOUND`                | 404    | Resource does not exist                                           | Never retry                                                |
+| `VALIDATION_ERROR`         | 400    | Body failed validation                                            | Read the message; fix the payload                          |
+| `BAD_REQUEST`              | 400    | Malformed request                                                 | Fix the payload                                            |
+| `CONFLICT`                 | 409    | Resource exists, or a scheduled email already started sending     | Never retry                                                |
+| `RATE_LIMITED`             | 429    | >100 requests / 10s per org                                       | Back off ~seconds, retry                                   |
+| `DAILY_LIMIT_EXCEEDED`     | 429    | Daily recipient ceiling hit                                       | Retry after midnight UTC                                   |
+| `MONTHLY_LIMIT_EXCEEDED`   | 429    | Monthly quota, or the 2× hard ceiling with metered billing on     | Retry next month, upgrade, or enable metered billing       |
+| `PLAN_LIMIT_EXCEEDED`      | 403    | Not allowed on this plan (domain limit, 100k manual suppressions) | Upgrade. Never retry                                       |
+| `DOMAIN_NOT_VERIFIED`      | 403    | Sender domain not verified                                        | Verify the domain. Never retry                             |
+| `ALL_SUPPRESSED`           | 422    | Every recipient is suppressed                                     | Terminal for this send. Not an escalation                  |
+| `SENDING_SUSPENDED`        | 403    | Account suspended — high bounce/complaint rate over 7 days        | Contact support@eusend.dev                                 |
+| `LIST_SEND_HELD`           | 403    | Past the 500-recipient unreviewed list allowance                  | Wait for review. Retrying will not clear it                |
+| `BROADCAST_HELD`           | 403    | Broadcast used its unreviewed allowance                           | Resumes from where it stopped once cleared. Do not re-send |
+| `SERVICE_PAUSED`           | 503    | Platform-wide pause                                               | Retry shortly                                              |
+| `ATTACHMENT_STORAGE_ERROR` | 503    | Attachment could not be stored; the send did not happen           | Retry                                                      |
+| `PAYLOAD_TOO_LARGE`        | 413    | Body over 16 MB                                                   | Shrink it. Base64 inflates files ~33%                      |
+| `INTERNAL_ERROR`           | 500    | Server error                                                      | Retry after a short delay                                  |
 
 ## Retry policy
 
@@ -87,4 +87,4 @@ On a 429, `RetryAfter`, `RateLimitReset`, and `RateLimitRemaining` are parsed fr
 response headers for you.
 
 **Node** — nothing throws on an API error; the failure is in the returned `error`. Network
-failures do throw, so wrap in `try/catch` *and* check `error`.
+failures do throw, so wrap in `try/catch` _and_ check `error`.

@@ -15,11 +15,11 @@ endpoint can tell them apart from production traffic.
 
 The recipient's local part selects the outcome:
 
-| Send to | Simulates |
-| --- | --- |
-| `bounced@…` | A hard bounce — fires `email.bounced` |
-| `complained@…` | A spam complaint — fires `email.complained` |
-| anything else | The normal delivered → opened → clicked path |
+| Send to        | Simulates                                    |
+| -------------- | -------------------------------------------- |
+| `bounced@…`    | A hard bounce — fires `email.bounced`        |
+| `complained@…` | A spam complaint — fires `email.complained`  |
+| anything else  | The normal delivered → opened → clicked path |
 
 That covers the two branches worth testing: the ones that suppress an address and change
 what your application should do next.
@@ -51,12 +51,16 @@ const body = JSON.stringify({ type: 'email.bounced', email_id: 'test', tags: {},
 const headers = {
   'webhook-id': 'msg_test_1',
   'webhook-timestamp': String(Math.floor(Date.now() / 1000)),
-  'webhook-signature': signWebhook(secret, 'msg_test_1', String(Math.floor(Date.now() / 1000)), body),
+  'webhook-signature': signWebhook(
+    secret,
+    'msg_test_1',
+    String(Math.floor(Date.now() / 1000)),
+    body,
+  ),
 }
 ```
 
-Assert on both branches: a valid signature is accepted, and a tampered body is rejected with
-401. The second is the one that catches a handler that parses before verifying — mutate the
+Assert on both branches: a valid signature is accepted, and a tampered body is rejected with 401. The second is the one that catches a handler that parses before verifying — mutate the
 body after signing and the test must fail.
 
 ## CI

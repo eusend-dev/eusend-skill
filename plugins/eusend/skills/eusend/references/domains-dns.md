@@ -8,8 +8,8 @@ A sending domain must be verified before `from` may use it. Unverified senders f
 ```ts
 const { data } = await client.domains.create('acme.com')
 data.records // every record to publish, in order
-data.dkim    // { type: 'TXT', name: 'eusend._domainkey.acme.com', value: 'v=DKIM1; …' }
-data.dmarc   // { type: 'TXT', name: '_dmarc.acme.com', value: 'v=DMARC1; p=none; …' }
+data.dkim // { type: 'TXT', name: 'eusend._domainkey.acme.com', value: 'v=DKIM1; …' }
+data.dmarc // { type: 'TXT', name: '_dmarc.acme.com', value: 'v=DMARC1; p=none; …' }
 ```
 
 ```bash
@@ -35,8 +35,8 @@ Rest of the surface: `client.domains.list()`, `.get(id)`, `.delete(id)`.
 
 ### DKIM — required
 
-| Type | Host | Value |
-| --- | --- | --- |
+| Type  | Host                         | Value                            |
+| ----- | ---------------------------- | -------------------------------- |
 | `TXT` | `eusend._domainkey.acme.com` | `v=DKIM1; k=rsa; p=<public key>` |
 
 This is what authenticates your mail. Nothing sends without it.
@@ -50,15 +50,15 @@ eusend's mail carries its own bounce domain, so an SPF record on `acme.com` is n
 consulted for it — adding `include:_spf.eusend.dev` there authorises nothing.
 
 Worse, a domain may publish only **one** SPF record. A second one makes SPF fail for
-*every* service sending from that domain, including the company's own Google Workspace or
+_every_ service sending from that domain, including the company's own Google Workspace or
 Microsoft 365 mail. If an SPF record already exists, leave it exactly as it is.
 
 DMARC passes on DKIM alignment alone, so nothing is missing.
 
 ### DMARC — recommended
 
-| Type | Host | Value |
-| --- | --- | --- |
+| Type  | Host              | Value                                         |
+| ----- | ----------------- | --------------------------------------------- |
 | `TXT` | `_dmarc.acme.com` | `v=DMARC1; p=none; rua=mailto:dmarc@acme.com` |
 
 Start at `p=none` — it only collects reports and changes nothing about delivery. Move to
@@ -71,13 +71,13 @@ digests there.
 
 ### Return-Path records — optional, both or neither
 
-| Type | Host | Value | Priority |
-| --- | --- | --- | --- |
-| `TXT` | `send.acme.com` | `v=spf1 include:_spf.eusend.dev ~all` | — |
-| `MX` | `send.acme.com` | `feedback.eusend.dev` | `10` |
+| Type  | Host            | Value                                 | Priority |
+| ----- | --------------- | ------------------------------------- | -------- |
+| `TXT` | `send.acme.com` | `v=spf1 include:_spf.eusend.dev ~all` | —        |
+| `MX`  | `send.acme.com` | `feedback.eusend.dev`                 | `10`     |
 
 Publishing **both** switches outbound mail to a bounce address on the customer's own
-domain. SPF then passes *and* aligns, so DMARC passes on two mechanisms instead of one,
+domain. SPF then passes _and_ aligns, so DMARC passes on two mechanisms instead of one,
 and delayed bounces return per-domain so failed addresses are suppressed automatically.
 
 This SPF record is safe precisely because it sits on the `send.` subdomain, which has no

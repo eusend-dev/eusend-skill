@@ -43,9 +43,9 @@ const { data } = await client.broadcasts.create({
   // or: react: <MayNewsletter />   or: templateId: '…'
 })
 
-await client.broadcasts.send(data.id)                                     // now
+await client.broadcasts.send(data.id) // now
 await client.broadcasts.send(data.id, { scheduledAt: '2026-06-01T09:00:00.000Z' }) // later
-await client.broadcasts.cancel(data.id)                                   // if scheduled
+await client.broadcasts.cancel(data.id) // if scheduled
 
 await client.broadcasts.get(broadcastId) // includes delivery stats
 await client.broadcasts.list()
@@ -66,7 +66,7 @@ recipients** in total. Past that, the first 500 are delivered and the remainder 
 the broadcast moves to `held` and returns `BROADCAST_HELD`.
 
 - Retrying does not clear it, and sending again does not restart it — a cleared broadcast
-  resumes from exactly where it stopped. (This is different from a *paused* broadcast.)
+  resumes from exactly where it stopped. (This is different from a _paused_ broadcast.)
 - The allowance is per account and one-time. Once reviewed, it's lifted for good.
 - Accounts sending from a domain registered in the last 30 days keep it until reviewed.
 - Transactional sending via `POST /emails` is entirely unaffected.
@@ -91,20 +91,23 @@ explicitly.
 
 Addresses the organization will not send to, across every API key and sending domain. Never
 shared between organizations. A send to a suppressed address is skipped silently and recorded
-with status `suppressed`; if *every* recipient is suppressed, the request fails with
+with status `suppressed`; if _every_ recipient is suppressed, the request fails with
 `ALL_SUPPRESSED` (422).
 
-| Reason | Added by |
-| --- | --- |
-| `bounce` | Automatically, on a hard bounce |
+| Reason      | Added by                        |
+| ----------- | ------------------------------- |
+| `bounce`    | Automatically, on a hard bounce |
 | `complaint` | Automatically, on a spam report |
-| `manual` | By you, via API or dashboard |
+| `manual`    | By you, via API or dashboard    |
 
 ```ts
 await client.suppressions.list({ reason: 'bounce', limit: 50 })
-await client.suppressions.list({ email: '@acme.com' })   // substring match
+await client.suppressions.list({ email: '@acme.com' }) // substring match
 await client.suppressions.create({ email: 'opted-out@example.com' })
-await client.suppressions.import(['one@example.com', { email: 'two@example.com', reason: 'complaint' }])
+await client.suppressions.import([
+  'one@example.com',
+  { email: 'two@example.com', reason: 'complaint' },
+])
 await client.suppressions.remove('invalid@example.com') // by entry id or by address
 const { data: csv } = await client.suppressions.export() // whole list, streamed CSV
 ```
@@ -122,7 +125,7 @@ Test-mode keys can read the list but not modify it.
 ### Two rules
 
 **Import before the first send when migrating.** Export the previous provider's suppression
-list and import it *before* sending anything. Otherwise every address that already
+list and import it _before_ sending anything. Otherwise every address that already
 hard-bounced there gets a fresh attempt from a new IP, which is the fastest way to wreck a
 new sender's reputation. The dashboard's CSV importer handles SendGrid, Mailgun, Postmark,
 and SES export formats.

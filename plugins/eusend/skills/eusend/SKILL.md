@@ -12,12 +12,12 @@ European infrastructure.
 
 ## Pick the right interface
 
-| Situation | Use |
-| --- | --- |
-| Application code sending mail | An official SDK — Node.js, Python, or Go |
-| A runtime with no SDK | The HTTP API directly (JSON, bearer token) |
+| Situation                                                                                                           | Use                                                                   |
+| ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Application code sending mail                                                                                       | An official SDK — Node.js, Python, or Go                              |
+| A runtime with no SDK                                                                                               | The HTTP API directly (JSON, bearer token)                            |
 | A framework already configured for SMTP (Django, Rails, Laravel, WordPress, Ghost, Supabase, Nodemailer, PHPMailer) | The SMTP bridge — change host/port/credentials, don't rewrite the app |
-| An assistant operating the account interactively | The eusend MCP server (this plugin bundles it) |
+| An assistant operating the account interactively                                                                    | The eusend MCP server (this plugin bundles it)                        |
 
 Reach for the SMTP bridge when a working mailer config already exists. Swapping four
 settings beats rewriting every call site, and it relays through `POST /emails` anyway,
@@ -72,11 +72,11 @@ return data.id
 
 The three SDKs report failure differently — match the host language, don't paper over it:
 
-| SDK | Failure shape |
-| --- | --- |
-| Node.js | Returns `{ data, error }`. **Never throws on an API error.** `error.name` holds the code. |
-| Python | Raises a subclass of `eusend.EusendError`. Branch on `e.code`. |
-| Go | Returns `(result, error)`. Use `errors.As(err, &apiErr)` for `*eusend.Error`, then `apiErr.Code`. |
+| SDK     | Failure shape                                                                                     |
+| ------- | ------------------------------------------------------------------------------------------------- |
+| Node.js | Returns `{ data, error }`. **Never throws on an API error.** `error.name` holds the code.         |
+| Python  | Raises a subclass of `eusend.EusendError`. Branch on `e.code`.                                    |
+| Go      | Returns `(result, error)`. Use `errors.As(err, &apiErr)` for `*eusend.Error`, then `apiErr.Code`. |
 
 The Node SDK not throwing is the one people get wrong: a bare `await client.emails.send(...)`
 with no `error` check silently drops every failed send.
@@ -124,7 +124,7 @@ false. Full working handler in [references/webhooks.md](references/webhooks.md).
 
 **Tags are labels, not data.** Allowed characters are `A–Z a–z 0–9 _ -` only — no dots,
 spaces, `@`, or non-ASCII. An email address, a timestamp, or a UUID will be **rejected**.
-Max 10 tags per message. Tag the *kind* of mail (`category: password_reset`) and keep
+Max 10 tags per message. Tag the _kind_ of mail (`category: password_reset`) and keep
 identifiers in your own system; a high-cardinality tag makes a filter that matches one
 email, which the email ID already does better.
 
@@ -161,12 +161,12 @@ Retrying does not clear it. Transactional `POST /emails` is unaffected.
 
 **Retry with exponential backoff:**
 
-| Code | Status | Note |
-| --- | --- | --- |
-| `RATE_LIMITED` | 429 | Short backoff; the window is 10s |
-| `SERVICE_PAUSED` | 503 | Platform-wide pause, transient |
-| `ATTACHMENT_STORAGE_ERROR` | 503 | The send did not happen |
-| `INTERNAL_ERROR` | 500 | |
+| Code                       | Status | Note                             |
+| -------------------------- | ------ | -------------------------------- |
+| `RATE_LIMITED`             | 429    | Short backoff; the window is 10s |
+| `SERVICE_PAUSED`           | 503    | Platform-wide pause, transient   |
+| `ATTACHMENT_STORAGE_ERROR` | 503    | The send did not happen          |
+| `INTERNAL_ERROR`           | 500    |                                  |
 
 **Retry later, on a much longer horizon** — a tight loop just burns quota:
 `DAILY_LIMIT_EXCEEDED` (resets midnight UTC), `MONTHLY_LIMIT_EXCEEDED` (resets monthly).
@@ -184,16 +184,16 @@ delivers asynchronously; a checkout that awaits delivery confirmation will hang.
 
 ## Limits worth knowing before you design around them
 
-| | |
-| --- | --- |
-| Recipients | 50 each for `to`, `cc`, `bcc` |
-| Batch | 100 messages per request |
-| Attachments | 20 per message, 10 MB combined |
-| Request body | 16 MB (base64 inflates files ~33%) |
-| Scheduling | 30 days out, max |
-| Tags | 10 per message |
-| Contact import | 1,000 per call |
-| Suppression import | 1,000 per call |
+|                    |                                    |
+| ------------------ | ---------------------------------- |
+| Recipients         | 50 each for `to`, `cc`, `bcc`      |
+| Batch              | 100 messages per request           |
+| Attachments        | 20 per message, 10 MB combined     |
+| Request body       | 16 MB (base64 inflates files ~33%) |
+| Scheduling         | 30 days out, max                   |
+| Tags               | 10 per message                     |
+| Contact import     | 1,000 per call                     |
+| Suppression import | 1,000 per call                     |
 
 ## References
 

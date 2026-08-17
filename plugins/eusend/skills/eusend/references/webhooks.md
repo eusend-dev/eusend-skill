@@ -21,19 +21,19 @@ verifying on the next delivery, so update your endpoint first unless you're rota
 because it leaked.
 
 The URL must be publicly reachable. Private, loopback, and internal addresses are rejected
-at creation *and* re-checked after DNS resolution before every delivery, so pointing a
+at creation _and_ re-checked after DNS resolution before every delivery, so pointing a
 webhook at an internal host won't work even if DNS changes later.
 
 ## Events
 
-| Event | Fires when |
-| --- | --- |
-| `email.sent` | Accepted and in transit. Adds `provider_message_id` |
-| `email.delivered` | Receiving server confirmed delivery. Adds `recipients` |
-| `email.bounced` | Hard bounce; the address was auto-suppressed. Adds `bounce_type`, `diagnostic`, `smtp_code` or `dsn_status`, `recipients` |
-| `email.complained` | Marked as spam; auto-suppressed. Adds `recipients` |
-| `email.opened` | Opened — requires `track_opens`. Fires once per email |
-| `email.clicked` | Tracked link clicked — requires `track_clicks`. Adds `link_id`, `url` |
+| Event              | Fires when                                                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `email.sent`       | Accepted and in transit. Adds `provider_message_id`                                                                       |
+| `email.delivered`  | Receiving server confirmed delivery. Adds `recipients`                                                                    |
+| `email.bounced`    | Hard bounce; the address was auto-suppressed. Adds `bounce_type`, `diagnostic`, `smtp_code` or `dsn_status`, `recipients` |
+| `email.complained` | Marked as spam; auto-suppressed. Adds `recipients`                                                                        |
+| `email.opened`     | Opened — requires `track_opens`. Fires once per email                                                                     |
+| `email.clicked`    | Tracked link clicked — requires `track_clicks`. Adds `link_id`, `url`                                                     |
 
 Soft/transient failures are retried internally and never fire `email.bounced`.
 
@@ -57,10 +57,10 @@ mode deliveries also carry `test_mode: true`.
 
 Headers on every delivery:
 
-| Header | Contents |
-| --- | --- |
-| `webhook-id` | Unique delivery ID |
-| `webhook-timestamp` | Unix seconds |
+| Header              | Contents                   |
+| ------------------- | -------------------------- |
+| `webhook-id`        | Unique delivery ID         |
+| `webhook-timestamp` | Unix seconds               |
 | `webhook-signature` | `v1,` + base64 HMAC-SHA256 |
 
 The signature is `HMAC-SHA256(secret, "{webhook-id}.{webhook-timestamp}.{raw body}")`,
@@ -80,30 +80,26 @@ base64-encoded, prefixed with `v1,`. Svix-compatible.
 import express from 'express'
 import { createHmac, timingSafeEqual } from 'node:crypto'
 
-app.post(
-  '/webhooks/eusend',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const body = req.body.toString('utf8')
-    const signed = `${req.headers['webhook-id']}.${req.headers['webhook-timestamp']}.${body}`
-    const expected =
-      'v1,' + createHmac('sha256', process.env.EUSEND_WEBHOOK_SECRET!).update(signed).digest('base64')
+app.post('/webhooks/eusend', express.raw({ type: 'application/json' }), (req, res) => {
+  const body = req.body.toString('utf8')
+  const signed = `${req.headers['webhook-id']}.${req.headers['webhook-timestamp']}.${body}`
+  const expected =
+    'v1,' + createHmac('sha256', process.env.EUSEND_WEBHOOK_SECRET!).update(signed).digest('base64')
 
-    const received = Buffer.from(String(req.headers['webhook-signature'] ?? ''), 'utf8')
-    const digest = Buffer.from(expected, 'utf8')
+  const received = Buffer.from(String(req.headers['webhook-signature'] ?? ''), 'utf8')
+  const digest = Buffer.from(expected, 'utf8')
 
-    // timingSafeEqual throws on a length mismatch — check length first, or a
-    // missing/truncated header crashes the handler instead of returning 401.
-    if (received.length !== digest.length || !timingSafeEqual(received, digest)) {
-      return res.sendStatus(401)
-    }
+  // timingSafeEqual throws on a length mismatch — check length first, or a
+  // missing/truncated header crashes the handler instead of returning 401.
+  if (received.length !== digest.length || !timingSafeEqual(received, digest)) {
+    return res.sendStatus(401)
+  }
 
-    const event = JSON.parse(body)
-    // Acknowledge fast; do the work out of band.
-    res.sendStatus(200)
-    void handleEvent(event)
-  },
-)
+  const event = JSON.parse(body)
+  // Acknowledge fast; do the work out of band.
+  res.sendStatus(200)
+  void handleEvent(event)
+})
 ```
 
 ### Node (Next.js route handler / Web standard)
