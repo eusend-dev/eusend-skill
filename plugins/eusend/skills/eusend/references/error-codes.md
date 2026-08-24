@@ -24,6 +24,7 @@ Reading the code: `error.name` (Node SDK), `e.code` (Python), `apiErr.Code` (Go)
 | `PLAN_LIMIT_EXCEEDED`      | 403    | Not allowed on this plan (domain limit, 100k manual suppressions) | Upgrade. Never retry                                       |
 | `DOMAIN_NOT_VERIFIED`      | 403    | Sender domain not verified                                        | Verify the domain. Never retry                             |
 | `ALL_SUPPRESSED`           | 422    | Every recipient is suppressed                                     | Terminal for this send. Not an escalation                  |
+| `RECIPIENT_DOMAIN_UNDELIVERABLE` | 422 | A recipient domain publishes no mail exchanger, or is an RFC 2606 reserved name (`example.com`, `*.invalid`, `*.test`) | Fix the address. Never retry. Live sends only — test-mode keys are not checked |
 | `SENDING_SUSPENDED`        | 403    | Account suspended — high bounce/complaint rate over 7 days        | Contact support@eusend.dev                                 |
 | `LIST_SEND_HELD`           | 403    | Past the 500-recipient unreviewed list allowance                  | Wait for review. Retrying will not clear it                |
 | `BROADCAST_HELD`           | 403    | Broadcast used its unreviewed allowance                           | Resumes from where it stopped once cleared. Do not re-send |
