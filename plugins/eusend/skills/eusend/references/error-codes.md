@@ -20,7 +20,7 @@ Reading the code: `error.name` (Node SDK), `e.code` (Python), `apiErr.Code` (Go)
 | `CONFLICT`                 | 409    | Resource exists, or a scheduled email already started sending     | Never retry                                                |
 | `RATE_LIMITED`             | 429    | >100 requests / 10s per org                                       | Back off ~seconds, retry                                   |
 | `DAILY_LIMIT_EXCEEDED`     | 429    | Daily recipient ceiling hit                                       | Retry after midnight UTC                                   |
-| `MONTHLY_LIMIT_EXCEEDED`   | 429    | Monthly quota, or the 2× hard ceiling with metered billing on     | Retry next month, upgrade, or enable metered billing       |
+| `MONTHLY_LIMIT_EXCEEDED`   | 429    | Monthly quota, or the metered-billing ceiling above it            | Retry next month, raise your volume, or enable metered billing |
 | `PLAN_LIMIT_EXCEEDED`      | 403    | Not allowed on this plan (domain limit, 100k manual suppressions) | Upgrade. Never retry                                       |
 | `DOMAIN_NOT_VERIFIED`      | 403    | Sender domain not verified                                        | Verify the domain. Never retry                             |
 | `ALL_SUPPRESSED`           | 422    | Every recipient is suppressed                                     | Terminal for this send. Not an escalation                  |
@@ -67,8 +67,10 @@ again does not restart it, and re-sending a broadcast that was merely paused is 
 operation. Email support@eusend.dev if it's urgent.
 
 **`MONTHLY_LIMIT_EXCEEDED` has two meanings.** With metered billing off (the default), it's
-the plan quota and sending has stopped. With it on, it's the hard ceiling at twice the
-quota, which only support can raise. The message says which.
+the monthly quota and sending has stopped. With it on, it's the hard ceiling — the point at
+which the overage would have cost the price of the next volume up (twice the quota at the
+top volume, where there is no next one) — which only support can raise. The message says
+which.
 
 **`FORBIDDEN` on a read is usually the key, not the plan.** A `sending_access` key may only
 call `POST /emails`, `POST /emails/batch`, `PATCH /emails/:id`, and `POST /emails/:id/cancel`.
