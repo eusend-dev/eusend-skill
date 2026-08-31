@@ -11,11 +11,12 @@ await client.audiences.createContact(audience.id, {
   lastName: 'Smith',
 })
 
-// Bulk import — up to 1,000 per call
+// Bulk import — up to 1,000 per call. `unsubscribed` and `createdAt` exist so a list
+// migrated from another provider keeps its history.
 await client.audiences.batchCreateContacts(audience.id, {
   contacts: [
     { email: 'alice@example.com', firstName: 'Alice' },
-    { email: 'bob@example.com', firstName: 'Bob' },
+    { email: 'bob@example.com', unsubscribed: true, createdAt: '2024-02-01T10:00:00.000Z' },
   ],
 })
 
@@ -27,6 +28,14 @@ await client.audiences.delete(audience.id)
 ```
 
 `createContact` upserts, so re-importing a list doesn't duplicate anyone.
+
+A batch upsert **adds or corrects, never destroys**. A field the payload omits is left
+alone rather than overwritten with null, so importing `email` alone will not blank
+everyone's name.
+
+It can also only ever ADD an opt-out. `unsubscribed: false` will not clear an existing
+one, and neither will omitting the field — a stale CSV cannot put somebody back on a list
+they left. Re-subscribing is a consent decision: `updateContact`, one contact at a time.
 
 ## Broadcasts
 
