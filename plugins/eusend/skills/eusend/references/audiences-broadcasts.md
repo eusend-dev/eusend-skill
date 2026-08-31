@@ -43,6 +43,10 @@ const { data } = await client.broadcasts.create({
   // or: react: <MayNewsletter />   or: templateId: '…'
 })
 
+// Check the rendering first — goes only to your own verified addresses, leaves the
+// broadcast a draft, and works on the free plan.
+await client.broadcasts.test(data.id, { to: ['you@acme.com'] })
+
 await client.broadcasts.send(data.id) // now
 await client.broadcasts.send(data.id, { scheduledAt: '2026-06-01T09:00:00.000Z' }) // later
 await client.broadcasts.cancel(data.id) // if scheduled
@@ -55,6 +59,17 @@ await client.broadcasts.delete(broadcastId)
 
 Broadcasts have their own `scheduled_at` — the per-email scheduling on `POST /emails` does
 not apply.
+
+### Sending to an audience requires a paid plan
+
+`broadcasts.send` returns `403 PLAN_LIMIT_EXCEEDED` on the free plan. Everything else works
+there — creating audiences and contacts, composing, and `broadcasts.test`.
+
+`broadcasts.test` is the free-plan path for checking a campaign end to end. It delivers the
+real message through the real sending path, but only to addresses on a domain the account has
+verified (anything else is `403 DOMAIN_NOT_VERIFIED`), prefixes the subject with `[Test]`, and
+does not touch the broadcast's status or stats. It costs daily and monthly quota like any other
+send, and needs a LIVE key — "test" here means a dress rehearsal, not `eu_test_` sandbox mode.
 
 **Broadcasts never continue past the plan quota**, whatever the metered-billing setting says.
 That only covers transactional `POST /emails` and `/emails/batch`.
