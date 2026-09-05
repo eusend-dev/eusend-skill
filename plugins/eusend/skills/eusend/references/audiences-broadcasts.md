@@ -9,6 +9,10 @@ await client.audiences.createContact(audience.id, {
   email: 'user@example.com',
   firstName: 'Jane',
   lastName: 'Smith',
+  // Custom properties, usable as {{plan}} / {{company}} in a broadcast body. Values are
+  // strings; keys are lowercase [a-z0-9_] starting with a letter, 20 per contact. The
+  // built-ins (email, name, first_name, last_name, full_name) are rejected as keys.
+  properties: { plan: 'pro', company: 'Acme' },
 })
 
 // Bulk import — up to 1,000 per call. `unsubscribed` and `createdAt` exist so a list
@@ -27,7 +31,9 @@ await client.audiences.list()
 await client.audiences.delete(audience.id)
 ```
 
-`createContact` upserts, so re-importing a list doesn't duplicate anyone.
+`createContact` upserts, so re-importing a list doesn't duplicate anyone. It also
+REPLACES `properties`; a batch import merges them instead, so a CSV carrying only `plan`
+won't drop a `company` an earlier import set.
 
 A batch upsert **adds or corrects, never destroys**. A field the payload omits is left
 alone rather than overwritten with null, so importing `email` alone will not blank
