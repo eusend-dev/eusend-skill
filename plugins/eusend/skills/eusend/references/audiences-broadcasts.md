@@ -43,6 +43,27 @@ It can also only ever ADD an opt-out. `unsubscribed: false` will not clear an ex
 one, and neither will omitting the field — a stale CSV cannot put somebody back on a list
 they left. Re-subscribing is a consent decision: `updateContact`, one contact at a time.
 
+## Contact properties
+
+The org-wide registry behind the `properties` bag. Declaring is optional — a property sent
+on a contact that was never declared registers itself as a `string` — so this is about
+giving one a type and a fallback.
+
+```ts
+await client.contactProperties.create({
+  key: 'plan',
+  type: 'string', // or 'number': checked on write, still rendered as the string you sent
+  fallbackValue: 'free', // substituted into {{plan}} for contacts with no value
+})
+
+await client.contactProperties.list() // what {{variables}} exist — read before writing copy
+await client.contactProperties.update(id, { fallbackValue: 'trial' })
+await client.contactProperties.delete(id) // { deleted: true, contactsUpdated: 1240 }
+```
+
+`key` and `type` are fixed at creation; only the fallback can change. Deleting strips the
+key from every contact in the org and is not undoable, so confirm before calling it.
+
 ## Broadcasts
 
 A broadcast is one message to a whole audience. Creating and sending are deliberately
