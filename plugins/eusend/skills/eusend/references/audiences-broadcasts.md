@@ -64,6 +64,47 @@ await client.contactProperties.delete(id) // { deleted: true, contactsUpdated: 1
 `key` and `type` are fixed at creation; only the fallback can change. Deleting strips the
 key from every contact in the org and is not undoable, so confirm before calling it.
 
+## Topics
+
+Kinds of email a contact can subscribe to and leave independently. Org-wide, like contact
+properties. Scope a broadcast to one and it reaches only the people who want that kind of
+mail, so an unsubscribe becomes a preference change instead of losing the contact.
+
+```ts
+const { data: topic } = await client.topics.create({
+  name: 'Product updates',
+  defaultSubscription: 'opt_in', // or 'opt_out'
+  description: 'New features and changes.', // shown on the unsubscribe page
+  visibility: 'public', // 'private' (default) hides it from contacts not opted in
+})
+
+await client.topics.list() // what topics exist — read before scoping a broadcast
+await client.topics.subscribe(topic.id, contactId, true)
+await client.topics.clearSubscription(topic.id, contactId) // back to the default
+await client.topics.update(topic.id, { visibility: 'private' })
+await client.topics.delete(topic.id)
+```
+
+`default_subscription` decides what a contact who never chose receives:
+
+| Default   | A contact who never chose                          |
+| --------- | -------------------------------------------------- |
+| `opt_in`  | **receives** it until they explicitly unsubscribe   |
+| `opt_out` | **does not** until they explicitly subscribe        |
+
+It is **fixed at creation** and `PATCH` rejects it. Flipping an opt-out topic to opt-in
+would start mailing everyone who never asked, and nothing stored says which of them would
+have agreed. Changing it means creating a new topic.
+
+`clearSubscription` is not the same as `subscribe(..., false)`: it forgets the choice
+entirely, so on an opt-in topic the contact starts receiving it again.
+
+**The contact's global subscription still wins.** An unsubscribed contact receives nothing,
+whatever their topic preferences say — topics narrow a send, never widen it.
+
+Topics scope **broadcasts only**. `POST /emails` is unaffected, which is deliberate: a
+receipt or a password reset must never be filtered by a marketing preference.
+
 ## Broadcasts
 
 A broadcast is one message to a whole audience. Creating and sending are deliberately
@@ -73,6 +114,7 @@ separate calls.
 const { data } = await client.broadcasts.create({
   name: 'May newsletter',
   audienceId: audience.id,
+  topicId: topic.id, // optional — narrows the audience to that topic's subscribers
   from: 'hello@acme.com',
   subject: 'May update',
   html: '<p>Hi {{first_name}}…</p>',
@@ -131,6 +173,12 @@ faster than a queue would. `support@eusend.dev` can clear it on a deadline.
 Broadcasts carry a footer link to a hosted page at
 `https://api.eusend.dev/unsubscribe/:token`. Confirming removes the contact from that
 audience. The contact record is kept; only the subscription status changes.
+
+If the org has topics, that page also lists a checkbox per topic the contact can see —
+public ones, plus private ones they explicitly joined — so leaving one kind of mail no
+longer means leaving the list. A broadcast sent under a topic carries a **topic-scoped**
+link and `List-Unsubscribe` header, so Gmail's one-click retires that topic rather than
+the whole list.
 
 **Unsubscribed is not suppressed.** An unsubscribed contact is excluded from future
 broadcasts to that audience, and nothing else. Transactional mail via `POST /emails` still
