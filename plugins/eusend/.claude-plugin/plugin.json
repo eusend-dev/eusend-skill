@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "eusend",
   "displayName": "eusend",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Teaches Claude to integrate eusend correctly — sending, domain verification, webhook signatures, suppressions, and which errors are worth retrying. Bundles the eusend MCP server.",
   "author": {
     "name": "eusend",

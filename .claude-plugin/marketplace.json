@@ -13,7 +13,7 @@
       "source": "./plugins/eusend",
       "displayName": "eusend",
       "description": "Teaches Claude to integrate eusend correctly — sending, domain verification, webhook signatures, suppressions, and which errors are worth retrying. Bundles the eusend MCP server.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "eusend",
         "url": "https://eusend.dev"
