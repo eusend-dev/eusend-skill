@@ -28,6 +28,8 @@ await client.audiences.listContacts(audience.id, { subscribed: true, search: 'gm
 await client.audiences.updateContact(audience.id, contactId, { unsubscribed: true })
 await client.audiences.deleteContact(audience.id, contactId)
 await client.audiences.list()
+await client.audiences.get(audience.id) // { id, name, createdAt, updatedAt, contactCount }
+await client.audiences.update(audience.id, { name: 'Product updates' })
 await client.audiences.delete(audience.id)
 ```
 

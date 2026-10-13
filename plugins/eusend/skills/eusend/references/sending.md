@@ -159,6 +159,13 @@ data.data.forEach((result, i) => {
 })
 ```
 
+The batch endpoint honours `Idempotency-Key` too, applied per item by position — so a retry
+must send the same items in the same order:
+
+```ts
+await client.batch.send(messages, { idempotencyKey: `digest-${runId}` })
+```
+
 One result per input, in the same order — `data[i]` describes `emails[i]`. A queued item has
 `id`; a rejected one has `error` and `code`. **Failed items never fail the batch**, so a
 `201` status tells you nothing about individual messages. Retry only the failures.

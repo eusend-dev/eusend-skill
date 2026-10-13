@@ -34,6 +34,8 @@ webhook at an internal host won't work even if DNS changes later.
 | `email.complained` | Marked as spam; auto-suppressed. Adds `recipients`                                                                        |
 | `email.opened`     | Opened — requires `track_opens`. Fires once per email                                                                     |
 | `email.clicked`    | Tracked link clicked — requires `track_clicks`. Adds `link_id`, `url`                                                     |
+| `email.failed`     | Will not be delivered, and no recipient server rejected it — abandoned after retries or never queued. Adds `reason`       |
+| `email.suppressed` | Recipients on the suppression list were dropped and not sent to. Adds `recipients`                                        |
 
 Soft/transient failures are retried internally and never fire `email.bounced`.
 

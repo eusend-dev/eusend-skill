@@ -131,7 +131,9 @@ email, which the email ID already does better.
 **Batch sends fail per item.** `POST /emails/batch` returns `200`/`201` overall with one
 result per input, in order. Each is either `{ id }` or `{ error, code }` — a rejected item
 does not fail the batch. Iterate the results; don't assume success from the status code.
-Batch does **not** support `attachments` or `scheduled_at`; send those individually.
+Batch does **not** support `attachments` or `scheduled_at`; send those individually. It
+does honour `Idempotency-Key`, applied per item by position, so a retry must keep the same
+items in the same order.
 
 **Unsubscribed ≠ suppressed.** Unsubscribing removes a contact from broadcasts to that
 audience. It does **not** stop transactional mail from `POST /emails`. If a user opts out
