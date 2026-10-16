@@ -19,7 +19,7 @@ user-facing action on it.
 | `variables`                    | Template substitutions                                                                                         |
 | `headers`                      | Custom headers                                                                                                 |
 | `tags`                         | Max 10. Charset `A–Z a–z 0–9 _ -` only                                                                         |
-| `track_opens` / `trackOpens`   | Omit to use the org default (on unless changed)                                                                |
+| `track_opens` / `trackOpens`   | Omit to use the org default (off unless changed). Leave off for sign-in and reset mail                      |
 | `track_clicks` / `trackClicks` | Omit to use the org default                                                                                    |
 | `attachments`                  | Max 20, 10 MB combined                                                                                         |
 | `scheduled_at` / `scheduledAt` | ISO 8601, `Date`, or natural language. Max 30 days out                                                         |
