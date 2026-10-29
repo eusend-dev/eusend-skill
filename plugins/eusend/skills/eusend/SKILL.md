@@ -118,7 +118,7 @@ send returns `201`.
 
 **Verify webhook signatures against the raw body.** Parsing JSON first and
 re-serializing it produces a different byte string and the signature will never match.
-The scheme is Svix-compatible HMAC-SHA256; compare in constant time, and check length
+The scheme is HMAC-SHA256 with the secret used as-is (not Svix's `whsec_` format); compare in constant time, and check length
 before `timingSafeEqual` or a truncated header crashes the handler instead of returning
 false. Full working handler in [references/webhooks.md](references/webhooks.md).
 

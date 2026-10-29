@@ -1,7 +1,7 @@
 # Webhooks
 
-Real-time HTTP POSTs when an email's state changes. Deliveries are retried up to 3 times
-with exponential backoff. Your endpoint must return `2xx` **directly** — a `3xx` redirect is
+Real-time HTTP POSTs when an email's state changes. Failed deliveries are retried with
+exponential backoff for about four hours (10 attempts). Your endpoint must return `2xx` **directly** — a `3xx` redirect is
 not followed and counts as a failure.
 
 ## Subscribe
@@ -66,7 +66,8 @@ Headers on every delivery:
 | `webhook-signature` | `v1,` + base64 HMAC-SHA256 |
 
 The signature is `HMAC-SHA256(secret, "{webhook-id}.{webhook-timestamp}.{raw body}")`,
-base64-encoded, prefixed with `v1,`. Svix-compatible.
+base64-encoded, prefixed with `v1,`. The secret is used as-is (UTF-8) as the HMAC key —
+not the `whsec_` format, so Svix/Standard Webhooks libraries will not verify it.
 
 **Two things break this, both silently:**
 
