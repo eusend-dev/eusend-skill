@@ -216,7 +216,7 @@ reputation block.
 
 - `smtp_code` — numeric reply code. Absent when the bounce arrived asynchronously as a DSN.
 - `dsn_status` — dotted status (`5.1.1`), present only on async DSN bounces, in place of `smtp_code`.
-- `diagnostic` — the remote server's verbatim reason, trimmed to 500 chars. Absent if none was sent.
+- `diagnostic` — the remote server's reason, trimmed to 500 chars, with eusend's sending IPs shown as `[sending IP]`. Absent if none was sent.
 
 **Branch on `bounce_type` or `smtp_code`. Never match on `diagnostic`** — wording varies by
 provider and changes without notice. Treat it as text for humans and logs.
