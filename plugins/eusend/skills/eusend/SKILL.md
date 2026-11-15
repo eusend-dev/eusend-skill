@@ -219,7 +219,8 @@ Official docs: <https://eusend.dev/docs>.
 ## Operating an account with the MCP server
 
 This plugin bundles the eusend MCP server, which exposes the API as tools — sending,
-listing emails, adding domains, managing audiences and broadcasts, reading suppressions.
+listing emails, adding domains, managing audiences and broadcasts, reading suppressions
+and the account's sending reputation.
 It needs `EUSEND_API_KEY` in the environment. Set `EUSEND_FROM` to pin a default sender
 so a send never has to guess an address.
 
