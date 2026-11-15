@@ -146,8 +146,9 @@ not apply.
 there — creating audiences and contacts, composing, and `broadcasts.test`.
 
 `broadcasts.test` is the free-plan path for checking a campaign end to end. It delivers the
-real message through the real sending path, but only to addresses on a domain the account has
-verified (anything else is `403 DOMAIN_NOT_VERIFIED`), prefixes the subject with `[Test]`, and
+real message through the real sending path, but only to a team member's account email or an
+address on a domain the account has verified (anything else is `403 DOMAIN_NOT_VERIFIED`).
+The broadcast's own `from` domain must be verified too, so a test needs DNS done. It prefixes the subject with `[Test]`, and
 does not touch the broadcast's status or stats. It costs daily and monthly quota like any other
 send, and needs a LIVE key — "test" here means a dress rehearsal, not `eu_test_` sandbox mode.
 

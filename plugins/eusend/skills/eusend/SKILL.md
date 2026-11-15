@@ -91,7 +91,8 @@ These are the mistakes that actually reach production. Check each one.
 **`from` must be on a verified domain.** Anything else fails with `DOMAIN_NOT_VERIFIED`
 (403). No retry will fix it. To send before DNS is ready, use
 `onboarding@sandbox.eusend.dev` — a shared sandbox that delivers **only to the account
-owner's own email address**, capped per day. It is for trying the API, not for staging.
+emails of the workspace's own team members** (anyone else is refused with
+`DOMAIN_NOT_VERIFIED`), capped per day. It is for trying the API, not for staging.
 
 **Do not add an SPF record to the root domain.** eusend authenticates with DKIM, and its
 mail carries its own bounce domain, so `include:_spf.eusend.dev` on `acme.com` authorises

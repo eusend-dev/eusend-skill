@@ -89,7 +89,8 @@ No dashboard action.
 ## The sandbox sender
 
 No DNS access yet? `onboarding@sandbox.eusend.dev` sends without any domain setup — but it
-delivers **only to the account owner's own email address**, and is capped per day. It
+delivers **only to the account emails of the workspace's team members** — anyone else is
+refused with `DOMAIN_NOT_VERIFIED` (403) — and is capped per day. It
 exists to try the API. It is not a staging environment, and a `sending_access` key pinned
 to a `domain_id` cannot use it.
 
