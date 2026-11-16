@@ -138,7 +138,7 @@ await client.broadcasts.delete(broadcastId)
 ```
 
 Broadcasts have their own `scheduled_at` — the per-email scheduling on `POST /emails` does
-not apply.
+not apply. It takes an ISO 8601 time at most 30 days ahead; a later one is a `400`.
 
 ### Sending to an audience requires a paid plan
 
