@@ -26,6 +26,9 @@ Reading the code: `error.name` (Node SDK), `e.code` (Python), `apiErr.Code` (Go)
 | `ALL_SUPPRESSED`           | 422    | Every recipient is suppressed                                     | Terminal for this send. Not an escalation                  |
 | `RECIPIENT_DOMAIN_UNDELIVERABLE` | 422 | A recipient domain publishes no mail exchanger, every mail server it lists points at `localhost` or a private address (parked typo domains such as `gmaii.com`), or it is an RFC 2606 reserved name (`example.com`, `*.invalid`, `*.test`). The message suggests the likely domain for a typo | Fix the address. Never retry. Live sends only — test-mode keys are not checked |
 | `SENDING_SUSPENDED`        | 403    | Suspended after a high bounce/complaint rate or a review          | Contact support@eusend.dev                                 |
+| `ACCOUNT_RESTRICTED`       | 403    | Account held pending review before its first send; not about anything it sent | Email support@eusend.dev. Never retry           |
+| `WORKSPACE_INACTIVE`       | 403    | This workspace has no active subscription                         | Choose a plan in Settings → Billing. Never retry           |
+| `SENDER_NOT_PERMITTED`     | 403    | `from` impersonates a brand the domain does not own, or is a sender identity this account has not used before | Change the display name, or ask support to add the sender. Only this message was refused |
 | `LIST_SEND_HELD`           | 403    | Past the 500-recipient unreviewed list allowance                  | Wait for review. Retrying will not clear it                |
 | `BROADCAST_HELD`           | 403    | Broadcast used its unreviewed allowance                           | Resumes from where it stopped once cleared. Do not re-send |
 | `SERVICE_PAUSED`           | 503    | Platform-wide pause                                               | Retry shortly                                              |

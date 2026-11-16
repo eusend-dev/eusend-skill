@@ -149,13 +149,16 @@ and changes without notice. Branch on `bounce_type` or `smtp_code`; treat `diagn
 opaque text for humans and logs.
 
 **Sending has ceilings beyond the API rate limit.** 100 requests / 10 seconds per
-organization, plus a daily recipient ramp on new accounts (2,000 in the first 24 hours,
-rising over ~7 days) and a monthly plan quota. A brand-new account cannot send at full
-volume on day one — build the backoff in rather than discovering it at launch.
+organization, a daily recipient ceiling, and a monthly plan quota. On the Free plan the
+daily ceiling is a flat 100 recipients and never grows; a paid account starts at 2,000 in
+its first 24 hours and ramps over ~7 days. A brand-new account cannot send at full volume on
+day one — build the backoff in rather than discovering it at launch.
 
-**List sending is reviewed.** Until an account is reviewed, broadcasts and very large
-batches reach 500 recipients; the remainder is held (`LIST_SEND_HELD` / `BROADCAST_HELD`).
-Retrying does not clear it. Transactional `POST /emails` is unaffected.
+**List sending is reviewed.** Until an account is reviewed, list-shaped sending reaches 500
+recipients; the remainder is held (`LIST_SEND_HELD` / `BROADCAST_HELD`). Retrying does not
+clear it. "List-shaped" means 500+ recipients within an hour, counted across
+`POST /emails` and `POST /emails/batch` together, so a loop of single sends counts the same
+as one large batch.
 
 ## Errors: retry or don't
 

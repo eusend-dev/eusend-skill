@@ -157,15 +157,18 @@ That only covers transactional `POST /emails` and `/emails/batch`.
 
 ### The unreviewed-account allowance
 
-Until an account has been reviewed, broadcasts and very large batches reach **500
-recipients** in total. Past that, the first 500 are delivered and the remainder is held:
-the broadcast moves to `held` and returns `BROADCAST_HELD`.
+Until an account has been reviewed, broadcasts and list-shaped API sends reach **500
+recipients** in total. An API send is list-shaped once the account reaches 500 recipients
+within an hour, counted across `POST /emails` and `POST /emails/batch` together. Past that,
+the first 500 are delivered and the remainder is held: the broadcast moves to `held` and
+returns `BROADCAST_HELD`.
 
 - Retrying does not clear it, and sending again does not restart it — a cleared broadcast
   resumes from exactly where it stopped. (This is different from a _paused_ broadcast.)
 - The allowance is per account and one-time. Once reviewed, it's lifted for good.
 - Accounts sending from a domain registered in the last 30 days keep it until reviewed.
-- Transactional sending via `POST /emails` is entirely unaffected.
+- Ordinary transactional sending via `POST /emails` is unaffected; held API sends return
+  `LIST_SEND_HELD`.
 
 The reason is shared outbound IP reputation: one purchased list degrades delivery for every
 sender on the platform, and a 500-address sample shows real bounce and complaint rates
