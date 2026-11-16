@@ -156,9 +156,9 @@ day one — build the backoff in rather than discovering it at launch.
 
 **List sending is reviewed.** Until an account is reviewed, list-shaped sending reaches 500
 recipients; the remainder is held (`LIST_SEND_HELD` / `BROADCAST_HELD`). Retrying does not
-clear it. "List-shaped" means 500+ recipients within an hour, counted across
+clear it. "List-shaped" means 500+ different recipients within an hour, counted across
 `POST /emails` and `POST /emails/batch` together, so a loop of single sends counts the same
-as one large batch.
+as one large batch. Repeat mail to the same people does not add to the count.
 
 ## Errors: retry or don't
 

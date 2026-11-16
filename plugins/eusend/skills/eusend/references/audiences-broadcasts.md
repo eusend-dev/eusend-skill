@@ -158,8 +158,8 @@ That only covers transactional `POST /emails` and `/emails/batch`.
 ### The unreviewed-account allowance
 
 Until an account has been reviewed, broadcasts and list-shaped API sends reach **500
-recipients** in total. An API send is list-shaped once the account reaches 500 recipients
-within an hour, counted across `POST /emails` and `POST /emails/batch` together. Past that,
+recipients** in total. An API send is list-shaped once the account reaches 500 different
+recipients within an hour, counted across `POST /emails` and `POST /emails/batch` together. Past that,
 the first 500 are delivered and the remainder is held: the broadcast moves to `held` and
 returns `BROADCAST_HELD`.
 
