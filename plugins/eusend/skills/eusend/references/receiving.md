@@ -71,3 +71,9 @@ conversation — no need to encode ids in the address. To answer, send a normal 
 (`in.acme.com MX 10 inbound.eusend.dev`). Prefer a subdomain — the domain's own MX usually
 belongs to the team's mailbox provider. `GET /domains/:id` shows `inbound.mxPublished` once it
 resolves. `DELETE /domains/:id/inbound` turns it off (test keys can do neither).
+
+Enabled receiving hosts are checked every five minutes. The workspace owner is emailed when
+the MX is first found, confirmed missing or changed, and restored. Transient DNS errors do not
+trigger a loss notice; unchanged checks do not repeat emails. Sending DNS is checked separately.
+The dashboard offers automatic MX setup when the DNS provider has Domain Connect template v2;
+the sending-domain setup flow never adds a receiving MX.
