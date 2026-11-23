@@ -2,15 +2,17 @@
 
 Every **paid** workspace receives mail at any address on its own host, `<slug>.eusend.app`.
 No DNS, no mailbox, no catch-all rules: `support@`, `replies+ticket-123@` and anything else at
-the host all arrive. Free workspaces are refused.
+the host all arrive. Free workspaces are refused unless support has granted receiving access.
 
 ```bash
 curl https://api.eusend.dev/inbound/address -H "Authorization: Bearer $EUSEND_API_KEY"
 # {"host":"3e44228d8f38.eusend.app","address":"anything@3e44228d8f38.eusend.app","status":"active","active":true}
 ```
 
-`status` is `active`, `paid_plan_required`, or `on_hold` (account under review; mail is
-deferred, not lost).
+`status` is `active`, `paid_plan_required`, `on_hold` (account under review), or `disabled`
+(receiving disabled by an administrator). Held or disabled receiving defers new mail;
+senders may retry. Mail already accepted continues processing. Receiving overrides do not
+bypass account holds or quota limits.
 
 ## Getting mail into the app
 
