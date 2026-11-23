@@ -26,6 +26,11 @@ what your application should do next.
 
 ## What test mode does not do
 
+- It does not simulate inbound mail or provide a separate receiving inbox. Full-access test
+  keys read the same received messages as live keys; sending-only keys cannot read them.
+  Test keys cannot enable or disable domain receiving. Send a real message to a paid
+  workspace's receiving address to test `email.received` end to end.
+
 - **Test keys cannot modify the suppression list.** They can read it. Sends still respect it.
 - Domain verification still applies. Sending from an unverified domain fails with
   `DOMAIN_NOT_VERIFIED` on a test key just as it does on a live one.

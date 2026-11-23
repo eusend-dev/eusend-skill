@@ -52,9 +52,12 @@ Soft/transient failures are retried internally and never fire `email.bounced`.
 }
 ```
 
-`type`, `email_id`, `tags`, and `timestamp` are always present. `tags` is `{}` when the send
+Outbound-email payloads always include `type`, `email_id`, `tags`, and `timestamp`. `tags` is `{}` when the send
 had none — never absent — so `payload.tags.category` is safe to read without guarding. Test
 mode deliveries also carry `test_mode: true`.
+
+`email.received` instead identifies the message with `inbound_email_id` and has no send
+tags. Fetch its body and attachment bytes through the receiving API.
 
 ## Verification
 

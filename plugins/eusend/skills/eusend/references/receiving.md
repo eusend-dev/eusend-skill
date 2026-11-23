@@ -46,6 +46,14 @@ Python: `eusend.Inbound.get(id)`, `eusend.Inbound.attachment(id, 0)`. Go:
 `client.Inbound.Get(id)`, `client.Inbound.Attachment(id, 0)`. The original `.eml` is
 `GET /inbound/:id/raw`.
 
+## Listing mail
+
+List with `GET /inbound?order=asc` for oldest first, or `order=desc` (the default) for
+newest first. `to` filters by an exact recipient address, case-insensitively. Keep the same
+order and filter while following `next_cursor`; omit the cursor when changing them.
+Node: `eusend.inbound.list({ order: 'asc' })`. Python: `eusend.Inbound.list({"order": "asc"})`.
+Go: `client.Inbound.List(&eusend.ListInboundOptions{Order: "asc"})`.
+
 ## Threading replies
 
 `reply_to_email_id` is set when the message answers an email sent through eusend (its
@@ -62,8 +70,8 @@ conversation — no need to encode ids in the address. To answer, send a normal 
 - **Each message counts as one email** against the monthly quota and never into billed overage.
   Over quota, senders get a temporary `452` and retry; at 1,000 messages an hour, `451`.
 - 30 MB per message, 50 recipients. Kept for the plan's log retention (30 or 90 days).
-- Mail from Spamhaus-listed IPs, mail failing a sender's DMARC `p=reject`, and mail from
-  blocklisted domains is refused before it is stored.
+- Mail from Spamhaus-listed IPs and mail failing a sender's DMARC `p=reject` is refused during
+  SMTP. Mail from blocklisted domains is discarded after acceptance, without sending a bounce.
 
 ## Own domain
 
