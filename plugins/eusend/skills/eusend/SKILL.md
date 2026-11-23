@@ -1,6 +1,6 @@
 ---
 name: eusend
-description: Integrate and operate eusend, the EU-native transactional email API. Use when sending email from application code, wiring an eusend SDK (@eusend_dev/sdk, the eusend PyPI package, or eusend-go), setting up a sending domain and its DKIM/SPF/DMARC records, verifying eusend webhook signatures, handling bounces and suppressions, relaying through the eusend SMTP bridge, or debugging an eusend error code such as DOMAIN_NOT_VERIFIED, ALL_SUPPRESSED, LIST_SEND_HELD, or MONTHLY_LIMIT_EXCEEDED. Also use when adding transactional email (password resets, receipts, notifications) to a project that already depends on eusend.
+description: Integrate and operate eusend, the EU-native transactional email API. Use when sending email from application code, wiring an eusend SDK (@eusend_dev/sdk, the eusend PyPI package, or eusend-go), setting up a sending domain and its DKIM/SPF/DMARC records, verifying eusend webhook signatures, handling bounces and suppressions, relaying through the eusend SMTP bridge, receiving email into an app (inbound, the email.received webhook), or debugging an eusend error code such as DOMAIN_NOT_VERIFIED, ALL_SUPPRESSED, LIST_SEND_HELD, or MONTHLY_LIMIT_EXCEEDED. Also use when adding transactional email (password resets, receipts, notifications) to a project that already depends on eusend.
 license: MIT
 ---
 
@@ -217,19 +217,22 @@ Load these as needed — don't read them all up front.
   what to do about it.
 - [references/testing.md](references/testing.md) — test-mode keys, simulating bounces and
   complaints, and testing webhook handlers.
+- [references/receiving.md](references/receiving.md) — the workspace's `eusend.app` address,
+  the `email.received` webhook, reading messages and attachments, threading replies, and
+  receiving on your own domain.
 
 Official docs: <https://eusend.dev/docs>.
 
 ## Operating an account with the MCP server
 
 This plugin bundles the eusend MCP server, which exposes the API as tools — sending,
-listing emails, adding domains, managing audiences and broadcasts, reading suppressions
-and the account's sending reputation.
+listing emails, adding domains, managing audiences and broadcasts, reading suppressions,
+the account's sending reputation, and received mail.
 It needs `EUSEND_API_KEY` in the environment. Set `EUSEND_FROM` to pin a default sender
 so a send never has to guess an address.
 
 Destructive operations are deliberately absent: no deleting domains, audiences, contacts,
-or keys, and no un-suppressing. Broadcasts are two steps — `create_broadcast` only drafts,
+or keys, no turning off receiving, and no un-suppressing. Broadcasts are two steps — `create_broadcast` only drafts,
 `send_broadcast` is a separate call — so a bulk send is never one accidental tool call.
 Use the API or the dashboard for anything the tools don't cover, and prefer a test-mode
 key when experimenting.
