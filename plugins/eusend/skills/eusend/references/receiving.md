@@ -79,7 +79,8 @@ conversation — no need to encode ids in the address. To answer, send a normal 
 
 `PUT /domains/:id/inbound` with `{ "subdomain": "in" }` on a verified domain returns an MX record
 (`in.acme.com MX 10 inbound.eusend.dev`). Prefer a subdomain — the domain's own MX usually
-belongs to the team's mailbox provider. `GET /domains/:id` shows `inbound.mxPublished` once it
+belongs to the team's mailbox provider. Never `send` as the first label: `send.<domain>` is the
+Return-Path host for bounces, so the API refuses it with `400`. `GET /domains/:id` shows `inbound.mxPublished` once it
 resolves. `DELETE /domains/:id/inbound` turns it off (test keys can do neither).
 
 Enabling receiving and automatic MX setup require a paid plan or admin receiving grant.
