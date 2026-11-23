@@ -82,6 +82,11 @@ conversation — no need to encode ids in the address. To answer, send a normal 
 belongs to the team's mailbox provider. `GET /domains/:id` shows `inbound.mxPublished` once it
 resolves. `DELETE /domains/:id/inbound` turns it off (test keys can do neither).
 
+Enabling receiving and automatic MX setup require a paid plan or admin receiving grant.
+The API returns `403 FORBIDDEN` without receiving access, when receiving is disabled, or while
+the account is held. Turning receiving off remains available. An MX record alone does not mean
+the workspace can receive mail.
+
 Enabled receiving hosts are checked every five minutes. The workspace owner is emailed when
 the MX is first found, confirmed missing or changed, and restored. Transient DNS errors do not
 trigger a loss notice; unchanged checks do not repeat emails. Sending DNS is checked separately.
