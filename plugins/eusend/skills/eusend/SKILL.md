@@ -17,7 +17,7 @@ European infrastructure.
 | Application code sending mail                                                                                       | An official SDK — Node.js, Python, or Go                              |
 | A runtime with no SDK                                                                                               | The HTTP API directly (JSON, bearer token)                            |
 | A framework already configured for SMTP (Django, Rails, Laravel, WordPress, Ghost, Supabase, Nodemailer, PHPMailer) | The SMTP bridge — change host/port/credentials, don't rewrite the app |
-| An assistant operating the account interactively                                                                    | The eusend MCP server (this plugin bundles it)                        |
+| An assistant operating the account interactively                                                                    | The eusend MCP server                                                 |
 
 Reach for the SMTP bridge when a working mailer config already exists. Swapping four
 settings beats rewriting every call site, and it relays through `POST /emails` anyway,
@@ -225,14 +225,17 @@ Official docs: <https://eusend.dev/docs>.
 
 ## Operating an account with the MCP server
 
-This plugin bundles the eusend MCP server, which exposes the API as tools — sending,
+The eusend MCP server exposes the API as tools — sending,
 listing emails, adding domains, managing audiences and broadcasts, reading suppressions,
 the account's sending reputation, and received mail.
-It needs `EUSEND_API_KEY` in the environment. Set `EUSEND_FROM` to pin a default sender
-so a send never has to guess an address.
+The Claude Code plugin bundles it; the server in turn serves this skill to any MCP client
+that supports skills. Run locally, it needs `EUSEND_API_KEY` in the environment. Set
+`EUSEND_FROM` to pin a default sender so a send never has to guess an address.
 
 Destructive operations are deliberately absent: no deleting domains, audiences, contacts,
 or keys, no turning off receiving, and no un-suppressing. Broadcasts are two steps — `create_broadcast` only drafts,
 `send_broadcast` is a separate call — so a bulk send is never one accidental tool call.
+In clients that support form elicitation, `send_broadcast` and `cancel_broadcast` also ask
+the user directly before acting; elsewhere, confirm with the user yourself first.
 Use the API or the dashboard for anything the tools don't cover, and prefer a test-mode
 key when experimenting.
